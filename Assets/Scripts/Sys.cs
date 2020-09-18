@@ -9,14 +9,15 @@ public class Sys : MonoBehaviour
   void Start()
   {
     this.client = new WebClient();
-    this.RequestPresets(this.dataURL);
+    ServerData data = this.RequestPresets(this.dataURL);
+    this.MakeObjects(data);
   }
 
   /// <summary>
   /// Requests and parses JSON from the given url.
   /// Expects JSON object to fit ServerData struct.
   /// </summary>
-  /// <param name="url"></param>
+  /// <param name="url">Url to fetch JSON from.</param>
   /// <returns>Parsed ServerData object.</returns>
   private ServerData RequestPresets(string url)
   {
@@ -25,5 +26,18 @@ public class Sys : MonoBehaviour
 
     string json = this.client.DownloadString(this.dataURL);
     return JsonUtility.FromJson<ServerData>(json);
+  }
+
+  /// <summary>
+  /// Given ServerData, plots an object for every datapoint.
+  /// </summary>
+  /// <param name="data">Parsed ServerData object.</param>
+  private void MakeObjects(ServerData data)
+  {
+    foreach (var model in data.models)
+    {
+      GameObject box = Factory.Furniture(model);
+      box.transform.parent = this.gameObject.transform;
+    }
   }
 }
