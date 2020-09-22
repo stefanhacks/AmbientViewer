@@ -3,11 +3,18 @@ using System.Net;
 
 public class Sys : MonoBehaviour
 {
+  // Web Client
   WebClient client;
   string dataURL = "https://s3-sa-east-1.amazonaws.com/static-files-prod/unity3d/models.json";
 
+  // Aux objects
+  public Transform furnitureRoot;
+
   void Start()
   {
+    if (this.furnitureRoot == null)
+      throw new System.Exception("No transform provided to be used as root for Furniture Objects.");
+
     this.client = new WebClient();
     ServerData data = this.RequestPresets(this.dataURL);
     this.MakeObjects(data);
@@ -37,7 +44,7 @@ public class Sys : MonoBehaviour
     foreach (var model in data.models)
     {
       GameObject box = Factory.Furniture(model);
-      box.transform.parent = this.gameObject.transform;
+      box.transform.parent = this.furnitureRoot;
     }
   }
 }
