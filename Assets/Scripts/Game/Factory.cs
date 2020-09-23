@@ -16,7 +16,6 @@ public static class Factory
     {"modelo03", "Furniture_ges1/sek/sek4"},
     {"modelo04", "Furniture_ges1/tumba_fur/tumba_fur"},
     {"modelo05", "Furniture_ges1/bed1/bed1"},
-
   };
 
   /// <summary>
