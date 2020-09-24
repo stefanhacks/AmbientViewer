@@ -38,9 +38,15 @@ public class Camera : MonoBehaviour
   /// </summary>
   private void CheckActivation()
   {
-    if (Input.GetKeyUp(this.activateKey)) this.moving = false;
+    if (Input.GetKeyUp(this.activateKey))
+    {
+      this.moving = false;
+      GUI.SetMessage(MessageBox.Console, "Released Camera.");
+    }
+
     if (Input.GetKeyDown(this.activateKey))
     {
+      GUI.SetMessage(MessageBox.Console, "Moving Camera.");
       this.lastPos = Input.mousePosition;
       this.moving = true;
     }
