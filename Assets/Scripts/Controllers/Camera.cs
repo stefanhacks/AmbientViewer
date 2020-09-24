@@ -26,17 +26,18 @@ public class Camera : MonoBehaviour
 
   void Update()
   {
-    this.CheckActivation();
-    if (this.moving == false) return;
-
-    this.UpdateRotation();
-    this.UpdatePosition();
+    if (this.CheckActivation())
+    {
+      this.UpdateRotation();
+      this.UpdatePosition();
+    }
   }
 
   /// <summary>
   /// Checks if Camera is being moved and sets last mouse position if so.
   /// </summary>
-  private void CheckActivation()
+  /// <returns>True if camera is moving, false if not.</returns>
+  private bool CheckActivation()
   {
     if (Input.GetKeyUp(this.activateKey))
     {
@@ -50,6 +51,8 @@ public class Camera : MonoBehaviour
       this.lastPos = Input.mousePosition;
       this.moving = true;
     }
+
+    return this.moving;
   }
 
   /// <summary>
