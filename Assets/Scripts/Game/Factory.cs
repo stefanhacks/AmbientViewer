@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public static class Factory
 {
@@ -58,6 +58,6 @@ public static class Factory
     // Left as is to treat for the free asset scale discrepancy.
     obj.transform.localScale = Vector3.Scale(scale, obj.transform.localScale);
 
-    return new GameObject();
+    return obj;
   }
 }

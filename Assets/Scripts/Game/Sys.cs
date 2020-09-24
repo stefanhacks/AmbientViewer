@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Net;
-using System.Collections;
 using System.Threading.Tasks;
 
 public class Sys : MonoBehaviour
@@ -14,7 +13,6 @@ public class Sys : MonoBehaviour
 
   // Aux objects
   public Transform furnitureRoot;
-
 
   async void Start()
   {
@@ -32,7 +30,6 @@ public class Sys : MonoBehaviour
     await Task.WhenAll(new Task[] { gui, web });
     this.SetToLoad(gui.Result, web.Result);
   }
-
 
   #region Loading Tasks
   /// <summary>
@@ -67,12 +64,16 @@ public class Sys : MonoBehaviour
   /// <param name="data">Parsed ServerData object.</param>
   private void SetToLoad(GameObject gui, ServerData data)
   {
-    Instantiate(gui);
+    GameObject uGUI = Instantiate(gui);
 
     foreach (var model in data.models)
     {
       GameObject box = Factory.Furniture(model);
       box.transform.parent = this.furnitureRoot;
     }
+
+    GUI gm = uGUI.GetComponent<GUI>();
+    gm.Setup();
+    gm.SetMessage(MessageBox.Console, "Ready.");
   }
 }
