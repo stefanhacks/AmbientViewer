@@ -13,7 +13,7 @@ public enum Move
 public class CameraControl : MonoBehaviour
 {
   // Settings
-  private KeyCode activateKey = KeyCode.Space;
+  private KeyCode activateKey = KeyCode.Mouse1;
   private bool moving = false;
 
   // Rotation Vars
@@ -43,7 +43,7 @@ public class CameraControl : MonoBehaviour
     {
       this.moving = false;
       Cursor.visible = true;
-      GUI.SetMessage(MessageBox.Console, "Released Camera.");
+      GUI.SetMessage(MessageBox.Console, "[Camera] Released.");
     }
 
     if (Input.GetKeyDown(this.activateKey))
@@ -51,7 +51,7 @@ public class CameraControl : MonoBehaviour
       this.moving = true;
       this.lastPos = Input.mousePosition;
       Cursor.visible = false;
-      GUI.SetMessage(MessageBox.Console, "Moving Camera.");
+      GUI.SetMessage(MessageBox.Console, "[Camera] Moving.");
     }
 
     return this.moving;

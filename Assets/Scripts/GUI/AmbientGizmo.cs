@@ -37,6 +37,7 @@ public static class AmbientGizmo
     // Making the object dynamically for the sake of it.
     gizmo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
     gizmo.layer = LayerMask.NameToLayer("AmbientGizmo");
+    Object.Destroy(gizmo.GetComponent<Collider>());
 
     Material boxMat = Resources.Load<Material>(materialPath);
     gizmo.GetComponent<Renderer>().material = boxMat;
