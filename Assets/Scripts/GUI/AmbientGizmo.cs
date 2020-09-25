@@ -3,7 +3,7 @@
 public static class AmbientGizmo
 {
   private static GameObject gizmo = null;
-  private static string matPath = "Gizmo/Mat";
+  private static string materialPath = "Gizmo/Mat";
 
   /// <summary>
   /// Spawns the Gizmo Object on top of an object.
@@ -12,7 +12,7 @@ public static class AmbientGizmo
   /// <param name="at">Target GameObject.</param>
   public static void SpawnGizmo(GameObject at)
   {
-    // This way, object is created only once.
+    // This way, object is created only once - then reused, saving processing.
     if (gizmo == null) MakeBox();
 
     // Center position of render.
@@ -38,7 +38,7 @@ public static class AmbientGizmo
     gizmo = GameObject.CreatePrimitive(PrimitiveType.Sphere);
     gizmo.layer = LayerMask.NameToLayer("AmbientGizmo");
 
-    Material boxMat = Resources.Load<Material>(matPath);
+    Material boxMat = Resources.Load<Material>(materialPath);
     gizmo.GetComponent<Renderer>().material = boxMat;
   }
 }
