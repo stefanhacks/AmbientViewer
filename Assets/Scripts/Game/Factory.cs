@@ -58,6 +58,9 @@ public static class Factory
     // Left as is to treat for the free asset scale discrepancy.
     obj.transform.localScale = Vector3.Scale(scale, obj.transform.localScale);
 
+    // Adds collider for click support.
+    obj.AddComponent<MeshCollider>();
+
     return obj;
   }
 }

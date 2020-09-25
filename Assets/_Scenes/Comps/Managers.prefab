@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1938626642124207462}
   - component: {fileID: 1938626642124207457}
+  - component: {fileID: 7194930167821531911}
   m_Layer: 0
   m_Name: Managers
   m_TagString: GameController
@@ -44,3 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   furnitureRoot: {fileID: 0}
+--- !u!114 &7194930167821531911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1938626642124207456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08d63cb0a5e127849abc0e9cca5da817, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

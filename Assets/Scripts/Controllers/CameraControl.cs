@@ -10,7 +10,7 @@ public enum Move
   Up = KeyCode.E,
 }
 
-public class Camera : MonoBehaviour
+public class CameraControl : MonoBehaviour
 {
   // Settings
   private KeyCode activateKey = KeyCode.Space;
@@ -42,14 +42,16 @@ public class Camera : MonoBehaviour
     if (Input.GetKeyUp(this.activateKey))
     {
       this.moving = false;
+      Cursor.visible = true;
       GUI.SetMessage(MessageBox.Console, "Released Camera.");
     }
 
     if (Input.GetKeyDown(this.activateKey))
     {
-      GUI.SetMessage(MessageBox.Console, "Moving Camera.");
-      this.lastPos = Input.mousePosition;
       this.moving = true;
+      this.lastPos = Input.mousePosition;
+      Cursor.visible = false;
+      GUI.SetMessage(MessageBox.Console, "Moving Camera.");
     }
 
     return this.moving;
