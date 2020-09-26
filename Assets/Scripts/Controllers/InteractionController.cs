@@ -13,18 +13,29 @@ public class InteractionController : MonoBehaviour
   // Selection Variables
   private GameObject selectedObject;
   private Vector3 lastPos = Vector3.zero;
+  private Plane floorPlane;
+  private int furnitureMask;
 
   // Deformation Variables
   private bool deforming = false;
   private Deform deformType = Deform.Move;
 
-  private Vector3 moveIntensity = new Vector3(2, 2, 2);
   private Vector3 scaleIntensity = new Vector3(2, 2, 2);
   private Vector3 rotationIntensity = new Vector3(.7f, .7f, .7f);
 
   private bool lockedHorizontal = false;
   private float lockedRotationTreshold = 30;
   private Vector2 rotationAmount = new Vector2(30, 30);
+
+  private void Start()
+  {
+    // Sets up a plane to use for movement, Normal is on y.
+    this.floorPlane = new Plane(Vector3.up, Vector3.zero);
+
+    // Masks are bits, so we need to shift to get them. 
+    // Doing this on start avoids unecessary update() work.
+    this.furnitureMask = 1 << LayerMask.NameToLayer("Furniture");
+  }
 
   private void Update()
   {
@@ -66,12 +77,12 @@ public class InteractionController : MonoBehaviour
       // Stops deforming anything.
       this.deforming = false;
 
-      // Figures out where the click was.
+      // Figures out if the click was on a Furniture Obj.
       Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
       RaycastHit hitInfo;
 
-      // Only Furniture is Collidable, so if it hits...
-      if (Physics.Raycast(ray, out hitInfo))
+      // if (Physics.Raycast(ray, out hitInfo))
+      if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, this.furnitureMask))
       {
         // Selects the object if new.
         GameObject target = hitInfo.transform.gameObject;
@@ -80,7 +91,7 @@ public class InteractionController : MonoBehaviour
           this.Select(target);
         }
 
-        // Startst deforming if isn't.
+        // Starts deforming if isn't.
         else
         {
           this.lastPos = Input.mousePosition;
@@ -133,20 +144,17 @@ public class InteractionController : MonoBehaviour
   /// <param name="selection">GameObject to deform.</param>
   private void DeformSelection(GameObject selection)
   {
-    Vector3 delta = (Input.mousePosition - this.lastPos) * Time.deltaTime;
-    this.lastPos = Input.mousePosition;
-
     // Using selection via argument to ensure these methods aren't called without one.
     switch (deformType)
     {
       case Deform.Move:
-        this.MoveSelection(selection, delta);
+        this.MoveSelection(selection);
         break;
       case Deform.Scale:
-        this.ScaleSelection(selection, delta);
+        this.ScaleSelection(selection);
         break;
       case Deform.Rotate:
-        this.RotateSelection(selection, delta);
+        this.RotateSelection(selection);
         break;
       default:
         throw new System.Exception("Invalid deform type selected.");
@@ -154,33 +162,39 @@ public class InteractionController : MonoBehaviour
 
     // Updates Gizmo position.
     AmbientGizmo.SpawnGizmo(selection);
+    this.lastPos = Input.mousePosition;
   }
 
-  private void MoveSelection(GameObject selection, Vector3 amount)
+  private void MoveSelection(GameObject selection)
   {
-    amount.Scale(this.moveIntensity);
-    Vector3 newPos = selection.transform.position;
+    // Figures where the mouse is regarding Floor Plane.
+    Vector3 planePoint = Input.mousePosition;
+    planePoint.y -= selection.transform.position.y;
 
-    // With Axis key, moves only vertically.
-    if (Input.GetKey((KeyCode)Deform.Axis))
+    // Nabs intersection.
+    Ray ray = Camera.main.ScreenPointToRay(planePoint);
+    float coords;
+
+    // Positions object on plane.
+    if (this.floorPlane.Raycast(ray, out coords))
     {
-      newPos.y += amount.y;
-    }
+      Vector3 center = selection.GetComponent<Renderer>().bounds.center;
+      Vector3 delta = selection.transform.position - center;
+      delta.y = 0;
 
-    // Without, shimmies it around.
-    else
-    {
-      newPos.x += amount.x;
-      newPos.z += amount.y;
-    }
+      Vector3 newPos = ray.GetPoint(coords);
+      newPos.y = selection.transform.position.y;
 
-    GUI.SetMessage(MessageBox.Console, "[Interaction] Moving Object.");
-    selection.transform.position = newPos;
+      GUI.SetMessage(MessageBox.Console, "[Interaction] Moving Object.");
+      selection.transform.position = newPos + delta;
+    }
   }
 
-  private void ScaleSelection(GameObject selection, Vector3 amount)
+  private void ScaleSelection(GameObject selection)
   {
+    Vector3 amount = (Input.mousePosition - this.lastPos) * Time.deltaTime;
     amount.Scale(this.scaleIntensity);
+
     Vector3 newScale = selection.transform.localScale;
 
     // With Axis key, scales equaly.
@@ -202,9 +216,10 @@ public class InteractionController : MonoBehaviour
     selection.transform.localScale = newScale;
   }
 
-  private void RotateSelection(GameObject selection, Vector3 amount)
+  private void RotateSelection(GameObject selection)
   {
-    Vector3 newRotation = amount.normalized;
+    Vector3 delta = (Input.mousePosition - this.lastPos) * Time.deltaTime;
+    Vector3 newRotation = delta.normalized;
     newRotation.Scale(this.rotationIntensity);
 
     // With Axis key, controlled rotation.
