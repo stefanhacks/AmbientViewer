@@ -162,6 +162,10 @@ public class InteractionController : MonoBehaviour
     this.lastPos = Input.mousePosition;
   }
 
+  /// <summary>
+  /// Moves selected object, considering mouse interaction.
+  /// </summary>
+  /// <param name="selection">GameObject to move.</param>
   private void MoveSelection(GameObject selection)
   {
     // With Axis key, shifts object up and down.
@@ -200,6 +204,10 @@ public class InteractionController : MonoBehaviour
     }
   }
 
+  /// <summary>
+  /// Scales selected object, considering mouse interaction.
+  /// </summary>
+  /// <param name="selection">GameObject to scale.</param>
   private void ScaleSelection(GameObject selection)
   {
     Vector3 amount = (Input.mousePosition - this.lastPos) * Time.deltaTime;
@@ -226,6 +234,10 @@ public class InteractionController : MonoBehaviour
     selection.transform.localScale = newScale;
   }
 
+  /// <summary>
+  /// Rotates selected object, considering mouse interaction.
+  /// </summary>
+  /// <param name="selection">GameObject to rotate.</param>
   private void RotateSelection(GameObject selection)
   {
     float aroundX = Input.GetAxis("Mouse X") * this.rotationIntensity * Mathf.Deg2Rad;
