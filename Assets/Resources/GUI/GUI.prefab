@@ -890,7 +890,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
+  m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 1686635065
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -945,8 +945,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d0490ce76440534b83e465106d23fd4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  consoleBar: {fileID: 6772342406772870642}
-  shiftBar: {fileID: 8150845165337463014}
+  consoleText: {fileID: 6772342406772870642}
+  shiftText: {fileID: 8150845165337463014}
 --- !u!1 &7782406296000226144
 GameObject:
   m_ObjectHideFlags: 0

@@ -54,27 +54,34 @@ public class InteractionController : MonoBehaviour
     if (Input.GetKeyUp((KeyCode)Deform.Move))
     {
       deformType = Deform.Move;
-      GUI.SetMessage(MessageBox.Console, Messages.Move);
+      GUI.SetMessage(Messages.Move);
+      GUI.SetShiftMessage(ShiftMessages.Move);
     }
     else if (Input.GetKeyUp((KeyCode)Deform.Scale))
     {
       deformType = Deform.Scale;
-      GUI.SetMessage(MessageBox.Console, Messages.Scale);
+      GUI.SetMessage(Messages.Scale);
+      GUI.SetShiftMessage(ShiftMessages.Scale);
     }
     else if (Input.GetKeyUp((KeyCode)Deform.Rotate))
     {
       deformType = Deform.Rotate;
-      GUI.SetMessage(MessageBox.Console, Messages.Rotate);
+      GUI.SetMessage(Messages.Rotate);
+      GUI.SetShiftMessage(ShiftMessages.Rotate);
     }
     else if (Input.GetKeyUp((KeyCode)Deform.Clone))
     {
       deformType = Deform.Clone;
+      GUI.SetShiftMessage(ShiftMessages.Clear);
       if (this.selectedObject != null) this.CloneSelection(this.selectedObject);
+      else GUI.SetMessage(Messages.SelectForClone);
     }
     else if (Input.GetKeyUp((KeyCode)Deform.Delete))
     {
       deformType = Deform.Delete;
+      GUI.SetShiftMessage(ShiftMessages.Clear);
       if (this.selectedObject != null) this.DeleteSelection(this.selectedObject);
+      else GUI.SetMessage(Messages.SelectForDelete);
     }
   }
 
@@ -122,7 +129,7 @@ public class InteractionController : MonoBehaviour
 
       // On release, clear console.
       else if (Input.GetMouseButtonUp(0))
-        GUI.SetMessage(MessageBox.Console, Messages.Clear);
+        GUI.SetMessage(Messages.Clear);
     }
   }
   #endregion
@@ -136,7 +143,7 @@ public class InteractionController : MonoBehaviour
   {
     this.selectedObject = obj;
     AmbientGizmo.SpawnGizmo(obj);
-    GUI.SetMessage(MessageBox.Console, Messages.Selected);
+    GUI.SetMessage(Messages.Selected);
   }
 
   /// <summary>
@@ -213,7 +220,7 @@ public class InteractionController : MonoBehaviour
         Vector3 newPos = ray.GetPoint(coords);
         newPos.y = selection.transform.position.y;
 
-        GUI.SetMessage(MessageBox.Console, Messages.Moving);
+        GUI.SetMessage(Messages.Moving);
         selection.transform.position = newPos + delta;
       }
     }
@@ -245,7 +252,7 @@ public class InteractionController : MonoBehaviour
       newScale.z += amount.y;
     }
 
-    GUI.SetMessage(MessageBox.Console, Messages.Scaling);
+    GUI.SetMessage(Messages.Scaling);
     selection.transform.localScale = newScale;
   }
 
@@ -268,7 +275,7 @@ public class InteractionController : MonoBehaviour
     selection.transform.Rotate(Vector3.up, -aroundX);
     selection.transform.Rotate(Vector3.right, aroundY);
 
-    GUI.SetMessage(MessageBox.Console, Messages.Rotating);
+    GUI.SetMessage(Messages.Rotating);
   }
   #endregion
 
@@ -289,7 +296,7 @@ public class InteractionController : MonoBehaviour
 
     // Update selection pointer and override console message.
     this.Select(clone);
-    GUI.SetMessage(MessageBox.Console, Messages.Clone);
+    GUI.SetMessage(Messages.Clone);
   }
 
   /// <summary>
@@ -300,7 +307,7 @@ public class InteractionController : MonoBehaviour
   {
     Destroy(selection);
     this.ClearSelection();
-    GUI.SetMessage(MessageBox.Console, Messages.Delete);
+    GUI.SetMessage(Messages.Delete);
   }
   #endregion
 }
