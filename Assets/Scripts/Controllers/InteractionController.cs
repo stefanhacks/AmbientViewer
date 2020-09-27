@@ -20,6 +20,7 @@ public class InteractionController : MonoBehaviour
   private bool deforming = false;
   private Deform deformType = Deform.Move;
 
+  private float verticalIntensity = 0.1f;
   private Vector3 scaleIntensity = new Vector3(2, 2, 2);
   private Vector3 rotationIntensity = new Vector3(.7f, .7f, .7f);
 
@@ -167,26 +168,42 @@ public class InteractionController : MonoBehaviour
 
   private void MoveSelection(GameObject selection)
   {
-    // Figures where the mouse is regarding Floor Plane.
-    Vector3 planePoint = Input.mousePosition;
-    planePoint.y -= selection.transform.position.y;
-
-    // Nabs intersection.
-    Ray ray = Camera.main.ScreenPointToRay(planePoint);
-    float coords;
-
-    // Positions object on plane.
-    if (this.floorPlane.Raycast(ray, out coords))
+    // With Axis key, shifts object up and down.
+    if (Input.GetKey((KeyCode)Deform.Axis))
     {
-      Vector3 center = selection.GetComponent<Renderer>().bounds.center;
-      Vector3 delta = selection.transform.position - center;
-      delta.y = 0;
+      Vector3 delta = this.lastPos - Input.mousePosition;
+      float vAmount = delta.y * this.verticalIntensity;
 
-      Vector3 newPos = ray.GetPoint(coords);
-      newPos.y = selection.transform.position.y;
+      Vector3 newPos = selection.transform.position;
+      newPos.y -= vAmount;
 
-      GUI.SetMessage(MessageBox.Console, "[Interaction] Moving Object.");
-      selection.transform.position = newPos + delta;
+      selection.transform.position = newPos;
+    }
+
+    // Without, moves it around.
+    else
+    {
+      // Figures where the mouse is regarding Floor Plane.
+      Vector3 planePoint = Input.mousePosition;
+      planePoint.y -= selection.transform.position.y;
+
+      // Nabs intersection.
+      Ray ray = Camera.main.ScreenPointToRay(planePoint);
+      float coords;
+
+      // Positions object on plane.
+      if (this.floorPlane.Raycast(ray, out coords))
+      {
+        Vector3 center = selection.GetComponent<Renderer>().bounds.center;
+        Vector3 delta = selection.transform.position - center;
+        delta.y = 0;
+
+        Vector3 newPos = ray.GetPoint(coords);
+        newPos.y = selection.transform.position.y;
+
+        GUI.SetMessage(MessageBox.Console, "[Interaction] Moving Object.");
+        selection.transform.position = newPos + delta;
+      }
     }
   }
 
