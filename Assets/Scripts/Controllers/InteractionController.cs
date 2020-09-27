@@ -49,17 +49,17 @@ public class InteractionController : MonoBehaviour
     if (Input.GetKeyUp((KeyCode)Deform.Move))
     {
       deformType = Deform.Move;
-      GUI.SetMessage(MessageBox.Console, "[Interaction] Set to move objects.");
+      GUI.SetMessage(MessageBox.Console, Messages.Move);
     }
     if (Input.GetKeyUp((KeyCode)Deform.Scale))
     {
       deformType = Deform.Scale;
-      GUI.SetMessage(MessageBox.Console, "[Interaction] Set to scale objects.");
+      GUI.SetMessage(MessageBox.Console, Messages.Scale);
     }
     if (Input.GetKeyUp((KeyCode)Deform.Rotate))
     {
       deformType = Deform.Rotate;
-      GUI.SetMessage(MessageBox.Console, "[Interaction] Set to rotate objects.");
+      GUI.SetMessage(MessageBox.Console, Messages.Rotate);
     }
   }
 
@@ -107,7 +107,7 @@ public class InteractionController : MonoBehaviour
 
       // On release, clear console.
       else if (Input.GetMouseButtonUp(0))
-        GUI.SetMessage(MessageBox.Console, "");
+        GUI.SetMessage(MessageBox.Console, Messages.Clear);
     }
   }
   #endregion
@@ -121,7 +121,7 @@ public class InteractionController : MonoBehaviour
   {
     this.selectedObject = obj;
     AmbientGizmo.SpawnGizmo(obj);
-    GUI.SetMessage(MessageBox.Console, "[Interaction] Object selected.");
+    GUI.SetMessage(MessageBox.Console, Messages.Selected);
   }
 
   /// <summary>
@@ -194,7 +194,7 @@ public class InteractionController : MonoBehaviour
         Vector3 newPos = ray.GetPoint(coords);
         newPos.y = selection.transform.position.y;
 
-        GUI.SetMessage(MessageBox.Console, "[Interaction] Moving Object.");
+        GUI.SetMessage(MessageBox.Console, Messages.Moving);
         selection.transform.position = newPos + delta;
       }
     }
@@ -222,7 +222,7 @@ public class InteractionController : MonoBehaviour
       newScale.z += amount.y;
     }
 
-    GUI.SetMessage(MessageBox.Console, "[Interaction] Scaling Object.");
+    GUI.SetMessage(MessageBox.Console, Messages.Scaling);
     selection.transform.localScale = newScale;
   }
 
@@ -241,7 +241,7 @@ public class InteractionController : MonoBehaviour
     selection.transform.Rotate(Vector3.up, -aroundX);
     selection.transform.Rotate(Vector3.right, aroundY);
 
-    GUI.SetMessage(MessageBox.Console, "[Interaction] Rotating Object.");
+    GUI.SetMessage(MessageBox.Console, Messages.Rotating);
   }
 }
 #endregion

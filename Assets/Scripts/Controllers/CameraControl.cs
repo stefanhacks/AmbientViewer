@@ -43,7 +43,7 @@ public class CameraControl : MonoBehaviour
     {
       this.moving = false;
       Cursor.visible = true;
-      GUI.SetMessage(MessageBox.Console, "[Camera] Released.");
+      GUI.SetMessage(MessageBox.Console, Messages.CameraRelease);
     }
 
     if (Input.GetKeyDown(this.activateKey))
@@ -51,7 +51,7 @@ public class CameraControl : MonoBehaviour
       this.moving = true;
       this.lastPos = Input.mousePosition;
       Cursor.visible = false;
-      GUI.SetMessage(MessageBox.Console, "[Camera] Moving.");
+      GUI.SetMessage(MessageBox.Console, Messages.CameraMove);
     }
 
     return this.moving;

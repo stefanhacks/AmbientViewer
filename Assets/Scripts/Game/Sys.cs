@@ -74,6 +74,6 @@ public class Sys : MonoBehaviour
 
     GUI gm = uGUI.GetComponent<GUI>();
     gm.Setup();
-    GUI.SetMessage(MessageBox.Console, "Ready.");
+    GUI.SetMessage(MessageBox.Console, Messages.Ready);
   }
 }
