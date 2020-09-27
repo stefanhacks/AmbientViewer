@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 
+[RequireComponent(typeof(InteractionController))]
 public class Sys : MonoBehaviour
 {
   // Web Client
@@ -64,8 +65,9 @@ public class Sys : MonoBehaviour
   /// <param name="data">Parsed ServerData object.</param>
   private void SetToLoad(GameObject gui, ServerData data)
   {
-    GameObject uGUI = Instantiate(gui);
+    this.GetComponent<InteractionController>().FurnitureRoot = this.furnitureRoot;
 
+    GameObject uGUI = Instantiate(gui);
     foreach (var model in data.models)
     {
       GameObject box = Factory.Furniture(model);
@@ -75,5 +77,6 @@ public class Sys : MonoBehaviour
     GUI gm = uGUI.GetComponent<GUI>();
     gm.Setup();
     GUI.SetMessage(MessageBox.Console, Messages.Ready);
+
   }
 }

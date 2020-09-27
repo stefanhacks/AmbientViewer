@@ -5,6 +5,8 @@ public enum Deform
   Move = KeyCode.Alpha1,
   Scale = KeyCode.Alpha2,
   Rotate = KeyCode.Alpha3,
+  Clone = KeyCode.Alpha4,
+  Delete = KeyCode.Alpha5,
   Axis = KeyCode.LeftShift,
 }
 
@@ -19,6 +21,9 @@ public class InteractionController : MonoBehaviour
   // Deformation Variables
   private bool deforming = false;
   private Deform deformType = Deform.Move;
+
+  private Transform furnitureRoot = null;
+  public Transform FurnitureRoot { set { this.furnitureRoot = value; } }
 
   private float verticalIntensity = 0.1f;
   private float rotationIntensity = 100;
@@ -51,15 +56,25 @@ public class InteractionController : MonoBehaviour
       deformType = Deform.Move;
       GUI.SetMessage(MessageBox.Console, Messages.Move);
     }
-    if (Input.GetKeyUp((KeyCode)Deform.Scale))
+    else if (Input.GetKeyUp((KeyCode)Deform.Scale))
     {
       deformType = Deform.Scale;
       GUI.SetMessage(MessageBox.Console, Messages.Scale);
     }
-    if (Input.GetKeyUp((KeyCode)Deform.Rotate))
+    else if (Input.GetKeyUp((KeyCode)Deform.Rotate))
     {
       deformType = Deform.Rotate;
       GUI.SetMessage(MessageBox.Console, Messages.Rotate);
+    }
+    else if (Input.GetKeyUp((KeyCode)Deform.Clone))
+    {
+      deformType = Deform.Clone;
+      if (this.selectedObject != null) this.CloneSelection(this.selectedObject);
+    }
+    else if (Input.GetKeyUp((KeyCode)Deform.Delete))
+    {
+      deformType = Deform.Delete;
+      if (this.selectedObject != null) this.DeleteSelection(this.selectedObject);
     }
   }
 
@@ -154,7 +169,7 @@ public class InteractionController : MonoBehaviour
         this.RotateSelection(selection);
         break;
       default:
-        throw new System.Exception("Invalid deform type selected.");
+        break;
     }
 
     // Updates Gizmo position.
@@ -255,5 +270,37 @@ public class InteractionController : MonoBehaviour
 
     GUI.SetMessage(MessageBox.Console, Messages.Rotating);
   }
+  #endregion
+
+  #region Extra Operations
+  /// <summary>
+  /// Clones the selected object and updates selection pointer to it.
+  /// </summary>
+  /// <param name="selection"></param>
+  private void CloneSelection(GameObject selection)
+  {
+    // Offsetting it a bit so it looks not as confusing.
+    Vector3 oldPos = selection.transform.position;
+    Vector3 newPos = new Vector3(oldPos.x + 0.75f, oldPos.y, oldPos.z + 0.5f);
+
+    GameObject clone = Object.Instantiate<GameObject>(selection);
+    clone.transform.parent = this.furnitureRoot;
+    clone.transform.position = newPos;
+
+    // Update selection pointer and override console message.
+    this.Select(clone);
+    GUI.SetMessage(MessageBox.Console, Messages.Clone);
+  }
+
+  /// <summary>
+  /// Destroys the selected object and clears selection pointers.
+  /// </summary>
+  /// <param name="selection"></param>
+  private void DeleteSelection(GameObject selection)
+  {
+    Destroy(selection);
+    this.ClearSelection();
+    GUI.SetMessage(MessageBox.Console, Messages.Delete);
+  }
+  #endregion
 }
-#endregion

@@ -20,6 +20,8 @@ public enum Messages
   CameraMove = 8,
   CameraRelease = 9,
   Ready = 10,
+  Clone = 11,
+  Delete = 12,
 }
 
 public class GUI : MonoBehaviour
@@ -52,6 +54,8 @@ public class GUI : MonoBehaviour
       { (int) Messages.CameraMove,  "[Camera] Moving." },
       { (int) Messages.CameraRelease, "[Camera] Released." },
       { (int) Messages.Ready, "Ready." },
+      { (int) Messages.Clone, "[Interaction] Object was cloned." },
+      { (int) Messages.Delete, "[Interaction] Object was deleted." },
     };
   }
 
