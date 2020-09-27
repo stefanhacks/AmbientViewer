@@ -21,12 +21,8 @@ public class InteractionController : MonoBehaviour
   private Deform deformType = Deform.Move;
 
   private float verticalIntensity = 0.1f;
+  private float rotationIntensity = 100;
   private Vector3 scaleIntensity = new Vector3(2, 2, 2);
-  private Vector3 rotationIntensity = new Vector3(.7f, .7f, .7f);
-
-  private bool lockedHorizontal = false;
-  private float lockedRotationTreshold = 30;
-  private Vector2 rotationAmount = new Vector2(30, 30);
 
   private void Start()
   {
@@ -184,16 +180,13 @@ public class InteractionController : MonoBehaviour
     else
     {
       // Figures where the mouse is regarding Floor Plane.
-      Vector3 planePoint = Input.mousePosition;
-      planePoint.y -= selection.transform.position.y;
-
-      // Nabs intersection.
-      Ray ray = Camera.main.ScreenPointToRay(planePoint);
+      Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
       float coords;
 
-      // Positions object on plane.
+      // Nabs intersection.
       if (this.floorPlane.Raycast(ray, out coords))
       {
+        // Positions object on plane.
         Vector3 center = selection.GetComponent<Renderer>().bounds.center;
         Vector3 delta = selection.transform.position - center;
         delta.y = 0;
@@ -235,23 +228,20 @@ public class InteractionController : MonoBehaviour
 
   private void RotateSelection(GameObject selection)
   {
-    Vector3 delta = (Input.mousePosition - this.lastPos) * Time.deltaTime;
-    Vector3 newRotation = delta.normalized;
-    newRotation.Scale(this.rotationIntensity);
+    float aroundX = Input.GetAxis("Mouse X") * this.rotationIntensity * Mathf.Deg2Rad;
+    float aroundY = Input.GetAxis("Mouse Y") * this.rotationIntensity * Mathf.Deg2Rad;
 
-    // With Axis key, controlled rotation.
+    // Lock around an axis.
     if (Input.GetKey((KeyCode)Deform.Axis))
     {
-      this.rotationAmount += new Vector2(newRotation.x, newRotation.y);
-      if (this.rotationAmount.x > this.lockedRotationTreshold) this.lockedHorizontal = true;
-      else if (this.rotationAmount.y > this.lockedRotationTreshold) this.lockedHorizontal = false;
-
-      if (this.lockedHorizontal == true) newRotation.y = 0;
-      else newRotation.x = 0;
+      aroundX = Mathf.Abs(aroundX) > Mathf.Abs(aroundY) ? aroundX : 0;
+      aroundY = Mathf.Abs(aroundY) > Mathf.Abs(aroundX) ? aroundY : 0;
     }
 
+    selection.transform.Rotate(Vector3.up, -aroundX);
+    selection.transform.Rotate(Vector3.right, aroundY);
+
     GUI.SetMessage(MessageBox.Console, "[Interaction] Rotating Object.");
-    selection.transform.Rotate(newRotation);
   }
 }
 #endregion
