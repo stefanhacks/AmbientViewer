@@ -12,6 +12,9 @@ public enum Deform
 
 public class InteractionController : MonoBehaviour
 {
+  // Load Control
+  public bool readingInputs = false;
+
   // Selection Variables
   private GameObject selectedObject;
   private Vector3 lastPos = Vector3.zero;
@@ -41,6 +44,8 @@ public class InteractionController : MonoBehaviour
 
   private void Update()
   {
+    if (!this.readingInputs) return;
+
     this.CheckDeformType();
     this.CheckClick();
   }

@@ -10,29 +10,59 @@ public class Sys : MonoBehaviour
   private string dataURL = "https://s3-sa-east-1.amazonaws.com/static-files-prod/unity3d/models.json";
 
   // Prefab Paths
+  [SerializeField]
   private string guiPath = "GUI/GUI";
+  [SerializeField]
+  private string camPath = "Main/Cam";
+  [SerializeField]
+  private string lightsPath = "Main/Lights";
+  [SerializeField]
+  private string roomPath = "Main/Room";
 
   // Aux objects
-  public Transform furnitureRoot;
+  public GameObject loadingCam;
+  private Transform furnitureRoot;
 
   async void Start()
   {
     // For the sake of Console Sanity.
     Debug.ClearDeveloperConsole();
 
-    if (this.furnitureRoot == null)
-      throw new System.Exception("No transform provided to be used as root for Furniture Objects.");
-
     // Readying loading tasks.
+    Task scene = this.MakeScene();
     Task<GameObject> gui = this.LoadGUI();
     Task<ServerData> web = this.RequestPresets(this.dataURL);
 
     // Await for tasks to end, then boot.
-    await Task.WhenAll(new Task[] { gui, web });
+    await Task.WhenAll(new Task[] { scene, gui, web });
+
     this.SetToLoad(gui.Result, web.Result);
   }
 
   #region Loading Tasks
+  /// <summary>
+  /// Loads prefabs and builds the main game scene.
+  /// </summary>
+  /// <returns></returns>
+  private async Task MakeScene()
+  {
+    Transform scene = this.transform.parent;
+
+    GameObject _cam = await Resources.LoadAsync<GameObject>(this.camPath) as GameObject;
+    GameObject _lights = await Resources.LoadAsync<GameObject>(this.lightsPath) as GameObject;
+    GameObject _room = await Resources.LoadAsync<GameObject>(this.roomPath) as GameObject;
+
+    GameObject cam = Instantiate(_cam);
+    GameObject lights = Instantiate(_lights);
+    GameObject room = Instantiate(_room);
+
+    cam.transform.parent = scene;
+    lights.transform.parent = scene;
+    room.transform.parent = scene;
+
+    this.furnitureRoot = room.transform.Find("Furniture");
+  }
+
   /// <summary>
   /// Asynchronously loads GUI.
   /// </summary>
@@ -55,7 +85,6 @@ public class Sys : MonoBehaviour
     string json = await this.client.DownloadStringTaskAsync(this.dataURL);
     return JsonUtility.FromJson<ServerData>(json);
   }
-  #endregion
 
   /// <summary>
   /// Instantiates the GUI prefab and, given 
@@ -66,7 +95,9 @@ public class Sys : MonoBehaviour
   private void SetToLoad(GameObject gui, ServerData data)
   {
     this.GetComponent<InteractionController>().FurnitureRoot = this.furnitureRoot;
+    this.GetComponent<InteractionController>().readingInputs = true;
 
+    Destroy(this.loadingCam);
     GameObject uGUI = Instantiate(gui);
     foreach (var model in data.models)
     {
@@ -77,6 +108,6 @@ public class Sys : MonoBehaviour
     GUI gm = uGUI.GetComponent<GUI>();
     gm.Setup();
     GUI.SetMessage(Messages.Ready);
-
   }
+  #endregion
 }
